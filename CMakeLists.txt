@@ -3,6 +3,8 @@ project(PuttIt)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+include(CTest)
+
 find_package(SDL2 REQUIRED)
 find_package(GTest REQUIRED)
 

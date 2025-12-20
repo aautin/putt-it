@@ -1,0 +1,29 @@
+name: tests
+
+on: push
+
+# on:
+#   pull_request:
+#     branches:
+#       - main
+
+jobs:
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Conan
+        run: pip install conan
+      - name: Conan profile detect
+        run: conan profile detect
+      - name: Conan install
+        run: conan install . --build=missing --settings build_type=Release
+      - name: Configure
+        run: cmake --preset conan-release
+      - name: Build
+        run: cmake --build build/Release
+      - name: Run tests
+        run: |
+          cd build/Release
+          ctest --output-on-failure
