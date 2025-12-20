@@ -39,3 +39,24 @@
 
 # debug information files
 *.dwo
+
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+CMakeUserPresets.json
+
+# Conan and CMake build directories
+build/
+out/
+
+# Visual Studio local config
+.vs/
