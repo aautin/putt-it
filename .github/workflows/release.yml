@@ -1,0 +1,58 @@
+name: tests
+
+on:
+  push:
+    tags:
+      - 'v*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build_zip_and_release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Conan
+        run: pip install conan
+
+      - name: Conan profile detect
+        run: conan profile detect
+
+      - name: Conan install
+        run: conan install . --build=missing --settings build_type=Release --settings compiler.cppstd=17
+
+      - name: Configure
+        run: cmake --preset conan-release
+
+      - name: Build
+        run: cmake --build --preset conan-release
+
+      - name: Extract tag name
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $version = $tag.TrimStart('v')
+          echo "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Create the ZIP
+        run: |
+          cpack -G ZIP --config build/Release/CPackConfig.cmake -B build/Release -D CPACK_PACKAGE_VERSION=${{ env.VERSION }}
+           
+      - name: Upload Release with ZIP
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: build/Release/*.zip
+          name: Release ${{ github.ref_name }}
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
