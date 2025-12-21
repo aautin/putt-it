@@ -1,21 +1,22 @@
 name: release
 
 on:
-  push:
-    branches:
-      - main
-    tags:
-      - 'v*.*'
+  create:
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   build_zip_and_release:
+    if: github.event.ref_type == 'tag' && startsWith(github.event.ref, 'v')
     runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.ref }}
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
@@ -38,7 +39,7 @@ jobs:
       - name: Extract tag name
         shell: pwsh
         run: |
-          $tag = "${{ github.ref_name }}"
+          $tag = "${{ github.event.ref }}"
           $version = $tag.TrimStart('v')
           echo "VERSION=$version" >> $env:GITHUB_ENV
 
@@ -48,13 +49,9 @@ jobs:
            
       - name: Upload Release with ZIP
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: build/*.zip
-          name: Release ${{ github.ref_name }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
+          name: Release ${{ github.event.ref }}
+          body_path: RELEASE.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
