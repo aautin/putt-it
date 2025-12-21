@@ -60,3 +60,7 @@ out/
 
 # Visual Studio local config
 .vs/
+
+#CPack
+_CPack_Packages/
+*.zip
