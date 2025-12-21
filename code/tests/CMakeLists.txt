@@ -1,4 +1,4 @@
-project(PuttIt-Tests)
+project("putt-it-tests")
 
 add_executable(${PROJECT_NAME})
 
