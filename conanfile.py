@@ -18,6 +18,7 @@ class GameConan(ConanFile):
 
     def requirements(self):
         self.requires("sdl/2.32.10")
+        self.requires("sdl_image/2.8.8")
         self.requires("gtest/1.17.0")
 
     def build(self):

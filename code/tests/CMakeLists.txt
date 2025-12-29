@@ -1,4 +1,4 @@
-project("putt-it-tests")
+project("Putt-It-tests")
 
 add_executable(${PROJECT_NAME})
 
@@ -7,9 +7,9 @@ add_test(
 	COMMAND $<TARGET_FILE:${PROJECT_NAME}>
 )
 
-set(SRCS main.cpp SDLTests.cpp)
+set(SRCS main.cpp SDLTests.cpp conversionTests.cpp)
 set(HDRS )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${HDRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 gtest::gtest)
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 gtest::gtest "Putt-It-core")
 target_sources(${PROJECT_NAME} PRIVATE ${SRCS})
